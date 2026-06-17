@@ -45,6 +45,7 @@ applyTo: ".github/agents/functional-test.agent.md, .github/skills/playwright-pat
 - Keep CI-debug work for traces, reports, screenshots, and videos inside the same Playwright lane instead of inventing a separate browser-debug parent.
 - Keep CI failure triage for Playwright and browser-level runs inside the `functional-test` lane.
 - Treat performance signals as first-class evidence when they measure representative user-visible behavior.
+- Keep deep performance diagnosis, load-test evidence, and cross-layer regression triage in `performance` once profiling or bottleneck analysis becomes primary.
 - Require environment notes for performance claims; do not imply benchmark-grade precision from ad hoc local runs.
 
 ## Monorepo adoption notes

@@ -22,12 +22,13 @@ This library is optimized first for:
 
 - Keep `npm` and `python -m ...` commands copyable in PowerShell.
 - Avoid Bash-only assumptions in agent or skill examples unless the consuming repo already depends on them.
-- Make Docker, Playwright browser dependencies, and local Postgres setup explicit.
+- Make Docker, Playwright browser dependencies, local Postgres setup, and any chosen profiler or load-test tools explicit.
 
 ### GitHub Actions CI
 
 - Map lanes to separate jobs or clearly separated steps.
 - Keep Playwright artifacts, scan artifacts, and migration evidence explicit in workflow outputs.
+- Keep profiler, bundle-analysis, and load-test artifacts explicit in workflow outputs when performance jobs run.
 - Keep Playwright HTML reports alongside trace, screenshot, and video artifacts when CI browser triage is part of the workflow.
 - Do not merge scan into lint or browser suites into unit or integration jobs just to save one workflow block.
 
@@ -50,6 +51,7 @@ This library is optimized first for:
 | Frontend tests            | `frontend/src/tests/`, `apps/web/src/tests/`                               |
 | Browser tests             | `tests/e2e/`, `frontend/tests/e2e/`, `apps/web/tests/e2e/`                 |
 | Migrations and SQL        | `backend/alembic/`, `apps/api/alembic/`, `db/`, `sql/`                     |
+| Performance diagnostics   | `perf/`, `k6/`, `tests/performance/`, `docs/performance/`                  |
 | Scan config and artifacts | `.github/workflows/`, `sonar-project.properties`, `trivy*.yaml`, `*.sarif` |
 
 Adjust file boundaries and commands to match the consuming repo's actual roots, but keep the lane ownership the same.
@@ -132,6 +134,7 @@ If the consuming repo uses another Node package manager, translate the commands 
   - GitHub Actions or workflow context for `frontend-test`
   - HTTP or API context for `backend`
   - Docker context for `backend-test`
+  - Browser or DevTools plus HTTP or API plus Postgres or Docker context for `performance`
   - Git or GitHub or pull-request context for `review`
   - GitHub or code-scanning context for `scan`
   - Postgres or Docker context for `postgres`
@@ -143,6 +146,7 @@ If the consuming repo uses another Node package manager, translate the commands 
 - `frontend-test` owns CI failure triage for Vitest and other frontend unit or integration runs.
 - `functional-test` owns CI failure triage for Playwright and browser-level runs.
 - `scan` owns CI failure triage for SonarQube, SARIF, dependency, secrets, and container-scan jobs.
+- `performance` owns CI failure triage for load-test, profiler, and performance-budget jobs.
 
 ## Required editor settings for Python
 
@@ -161,8 +165,9 @@ This repo already includes those settings in `.vscode/settings.json`.
 4. Choose the Playwright auth bootstrap pattern for the adopted repo.
 5. Decide how browser tests seed data: backend or API helper first, Postgres only when DB-level setup is the real concern.
 6. Point the Postgres lane to the real migration folders, query helpers, connection profile names, and disposable DB workflow.
-7. Configure SonarQube, SonarCloud, GitHub code scanning, Gitleaks, or Trivy only in the `scan` lane.
-8. Set the review lane's validation references and release criteria to match the consuming repo.
+7. Set the performance lane's bundle-analysis command, profiling entrypoint, load-test root, and artifact paths.
+8. Configure SonarQube, SonarCloud, GitHub code scanning, Gitleaks, or Trivy only in the `scan` lane.
+9. Set the review lane's validation references and release criteria to match the consuming repo.
 
 ## Suggested frontend structure
 
@@ -221,7 +226,7 @@ For seamless setup, keep repo-specific values explicit in stable files:
 - Copy-ready versions of these files live under `templates/turnkey/` in this library.
 - Use `templates/turnkey/README.md` as the copy order and replacement checklist.
 
-- `docs/copilot-turnkey.md` — repo roots, scripts, auth model, workflow names, Sonar host/project binding, review base refs, and Playwright bootstrap decisions.
+- `docs/copilot-turnkey.md` — repo roots, scripts, auth model, workflow names, Sonar host/project binding, review base refs, Playwright bootstrap decisions, performance commands, and performance artifact paths.
 - `.env.example` — placeholder variable names only, never secrets.
 - `openapi/openapi.yaml` or `docs/openapi.yaml` — stable OpenAPI entrypoint.
 - `requests.http` or `api/*.http` — reviewable REST Client request flows.
@@ -292,6 +297,15 @@ When an adopted repository uses these parent agents as coordinators, keep repo-l
 - Ask first before destructive changes.
 - Review autogenerate output manually, separate backfills when possible, and require rollback or safe roll-forward thinking.
 - Back performance claims with `EXPLAIN` or `EXPLAIN ANALYZE`, access-pattern context, representative row counts, and before or after comparison when possible.
+
+### Performance
+
+- Keep profiling, bottleneck diagnosis, load or stress evidence, and performance-regression triage in the `performance` lane.
+- Default tool choices are `rollup-plugin-visualizer`, Playwright traces or browser inspection, `py-spy`, `memray`, `k6`, and Postgres `EXPLAIN` evidence through `postgres`.
+- If Browser or DevTools or HTTP or API or Postgres or Docker MCP tools are available, use them to inspect traces, timings, plans, and container state, but keep commands, artifact paths, and environment notes explicit.
+- Keep Playwright spec authoring in `functional-test` and query-plan or index changes in `postgres` once those become the primary concern.
+- Hand product-code remediation to `frontend`, `backend`, or `postgres` once the bottleneck is understood.
+- Ask first before adding blocking CI budgets, vendor APM defaults, or production-only instrumentation.
 
 ### Review
 
@@ -388,6 +402,13 @@ When an adopted repository uses these parent agents as coordinators, keep repo-l
 - Docker extension
 - PostgreSQL extension
 
+### Performance
+
+- rollup-plugin-visualizer
+- py-spy
+- memray
+- k6
+
 ### Scan and reporting
 
 - Gitleaks
@@ -406,6 +427,7 @@ Do not merge these lanes if you want the design to stay sharp:
 - `frontend-test` with `backend-test`
 - `frontend-lint` with `backend-lint`
 - `functional-test` with any unit or integration test lane
+- `performance` into `functional-test`, `postgres`, `scan`, or `review`
 - `scan` with any lint lane
 - `review` with `scan`
 
@@ -415,6 +437,6 @@ Do not merge these lanes if you want the design to stay sharp:
 2. Add the core frontend and backend parent agents.
 3. Add the frontend and backend hidden specialists.
 4. Add the language-specific test and lint parents.
-5. Add the adjacent lanes: `functional-test`, `postgres`, `review`, and `scan`.
+5. Add the adjacent lanes: `functional-test`, `postgres`, `performance`, `review`, and `scan`.
 6. Add the four hidden review specialists.
 7. Add the matching instructions and skills.

@@ -9,24 +9,28 @@ Complete this file before declaring the repository turnkey-ready for this agent 
 - Frontend root: `<replace-me-or-n/a>`
 - Backend root: `<replace-me-or-n/a>`
 - Browser-test root: `<replace-me>`
+- Performance root: `<replace-me-or-n/a>`
 - Migration root: `<replace-me-or-n/a>`
 
 ## Commands
 
-| Concern           | Command        | Notes                                                |
-| ----------------- | -------------- | ---------------------------------------------------- |
-| Frontend install  | `<replace-me>` | Example: `npm install`                               |
-| Frontend lint     | `<replace-me>` |                                                      |
-| Frontend test     | `<replace-me>` |                                                      |
-| Frontend coverage | `<replace-me>` |                                                      |
-| Playwright run    | `<replace-me>` |                                                      |
-| Backend install   | `<replace-me>` | Example: `python -m pip install -r requirements.txt` |
-| Backend lint      | `<replace-me>` |                                                      |
-| Backend test      | `<replace-me>` |                                                      |
-| Backend coverage  | `<replace-me>` |                                                      |
-| Migrations up     | `<replace-me>` |                                                      |
-| Migrations down   | `<replace-me>` |                                                      |
-| Scan entrypoint   | `<replace-me>` |                                                      |
+| Concern              | Command               | Notes                                                                           |
+| -------------------- | --------------------- | ------------------------------------------------------------------------------- |
+| Frontend install     | `<replace-me>`        | Example: `npm install`                                                          |
+| Frontend lint        | `<replace-me>`        |                                                                                 |
+| Frontend test        | `<replace-me>`        |                                                                                 |
+| Frontend coverage    | `<replace-me>`        |                                                                                 |
+| Playwright run       | `<replace-me>`        |                                                                                 |
+| Bundle analysis      | `<replace-me-or-n/a>` | Example: `npm run build` with `rollup-plugin-visualizer`                        |
+| Backend install      | `<replace-me>`        | Example: `python -m pip install -r requirements.txt`                            |
+| Backend lint         | `<replace-me>`        |                                                                                 |
+| Backend test         | `<replace-me>`        |                                                                                 |
+| Backend coverage     | `<replace-me>`        |                                                                                 |
+| Profiling entrypoint | `<replace-me-or-n/a>` | Example: `py-spy record -o reports/pyspy.svg -- python -m uvicorn app.main:app` |
+| Load test            | `<replace-me-or-n/a>` | Example: `k6 run perf/smoke.js`                                                 |
+| Migrations up        | `<replace-me>`        |                                                                                 |
+| Migrations down      | `<replace-me>`        |                                                                                 |
+| Scan entrypoint      | `<replace-me>`        |                                                                                 |
 
 ## URLs and contracts
 
@@ -67,6 +71,13 @@ Complete this file before declaring the repository turnkey-ready for this agent 
 - Migration tool and path: `<replace-me>`
 - Query-plan evidence path if stored in repo: `<replace-me-or-n/a>`
 
+## Performance
+
+- Bundle-analysis artifact path: `<replace-me-or-n/a>`
+- Profiler artifact path: `<replace-me-or-n/a>`
+- Load-test artifact path: `<replace-me-or-n/a>`
+- Performance budget or SLO note location: `<replace-me-or-n/a>`
+
 ## Scan and Sonar
 
 - Sonar host: `<replace-me>`
@@ -81,6 +92,7 @@ Complete this file before declaring the repository turnkey-ready for this agent 
 
 - Frontend test workflow name: `<replace-me>`
 - Browser test workflow name: `<replace-me>`
+- Performance workflow name: `<replace-me-or-n/a>`
 - Scan workflow name: `<replace-me>`
 - Required status checks: `<replace-me>`
 - Artifact naming pattern: `<replace-me>`

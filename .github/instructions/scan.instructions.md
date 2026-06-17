@@ -12,6 +12,7 @@ These guidelines support `scan.agent.md` and related scan skills.
 - Keep scan tool-first and report-only by default.
 - Do not change CI, policies, quality gates, or repo-wide scan configuration without approval.
 - Scan gathers findings; `review` judges architecture, security, and release-risk implications.
+- Runtime performance diagnosis and load-test evidence belong to `performance` even when the first artifact came from CI.
 - Keep CI failure triage for scan and quality jobs in this lane instead of pushing it into frontend or backend test lanes.
 
 ## Required staged workflow

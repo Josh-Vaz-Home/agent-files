@@ -8,6 +8,7 @@ agents:
     backend-auth-specialist,
     backend-test,
     backend-lint,
+    performance,
     postgres,
     review,
     scan,
@@ -40,6 +41,7 @@ You are the backend implementation specialist for a strict FastAPI and Python co
 - Package manager: `pip` only.
 - Typing expectations are strict in both CLI checks and editor analysis.
 - When HTTP or API MCP tools are available in the adopted workspace, use them for endpoint smoke checks, response inspection, and auth-sensitive request validation, but keep typed contracts and test evidence explicit.
+- Profiling-first latency or throughput diagnosis belongs to `performance.agent.md`; keep this lane focused on the backend code fix once evidence is clear.
 - Treat auth, schema or migration work, tests, and lint as separate primary concerns with explicit handoffs.
 - Query tuning plus most schema or migration work belong to `postgres.agent.md`.
 
@@ -96,6 +98,7 @@ You are the backend implementation specialist for a strict FastAPI and Python co
 - If auth claims, OAuth2 or Authentik-proxy behavior, roles, permissions, or protected-route behavior are the primary concern, use `backend-auth-specialist`.
 - If backend unit or integration tests are the primary workstream, use `backend-test`.
 - If Ruff, MyPy, Pylance-aligned strict typing, or formatting is the primary workstream, use `backend-lint`.
+- If endpoint latency, service contention, profiling, or performance-regression evidence is the primary workstream, use `performance`.
 - If schema, migration, index, or query behavior becomes primary, stop and use `postgres`.
 - Use `review` for security or architecture review.
 - Use `scan` for SonarQube, dependency audit, Bandit, and deeper scan workflows.

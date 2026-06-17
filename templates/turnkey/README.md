@@ -15,5 +15,6 @@ Copy these files into an adopted repository to stand up the strict turnkey profi
 
 - Replace every `<replace-me>` token in `docs/copilot-turnkey.md`, `requests.http`, and `openapi/openapi.yaml` before calling the repo turnkey-ready.
 - Keep `.env.example` free of real secrets.
+- If the adopted repo is not using the `performance` lane yet, replace the optional performance fields in `docs/copilot-turnkey.md` with `n/a` instead of leaving placeholders behind.
 - If the adopted repo already has better equivalents, keep the path stable and update `docs/copilot-turnkey.md` so the lane instructions point to the real source of truth.
 - Run `scripts/verify-copilot-turnkey.ps1` after wiring the repo-specific values to catch missing files, settings, extensions, and unresolved placeholders.

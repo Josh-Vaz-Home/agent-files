@@ -64,6 +64,7 @@ Fill in:
 
 - repo roots
 - install, lint, test, coverage, and migration commands
+- performance entrypoints, artifact paths, and budget-note location when the lane is used
 - auth model, issuer, audience, and roles
 - Playwright bootstrap decisions
 - workflow names and artifact paths
@@ -90,6 +91,7 @@ Use the user-facing parent lanes only:
 - `backend-lint`
 - `functional-test`
 - `postgres`
+- `performance`
 - `review`
 - `scan`
 
@@ -116,6 +118,11 @@ You should not need user-visible handoff buttons for normal use.
 - Use `frontend-test` for Vitest unit or integration coverage.
 - Use `backend-test` for pytest unit or integration coverage.
 - Use `functional-test` for Playwright browser journeys, traces, reports, screenshots, or video triage.
+
+### Performance diagnosis
+
+- Use `performance` for profiling, bottleneck analysis, load or stress evidence, and performance-regression triage.
+- Keep Playwright authoring in `functional-test` and query plans or index changes in `postgres` once those become the primary concern.
 
 ### Static analysis and quality
 
@@ -183,6 +190,25 @@ Copy:
 - `.github/skills/git-review-playbook/**`
 - `.github/skills/scan-cli-workflows/**`
 - `.github/skills/github-cli-playbook/**`
+
+### Performance is not a safe standalone subset
+
+If you want the `performance` lane, copy it with the lanes that will own the eventual fix or judgment.
+
+If you copy `frontend`, `backend`, `functional-test`, `postgres`, `review`, or `scan` as part of that setup, also copy each lane's normal dependency set such as its instructions, skills, and hidden specialists where applicable. Do not treat the file list below as a complete replacement for those lane-specific subsets.
+
+Copy:
+
+- `.github/copilot-instructions.md`
+- `performance.agent.md`
+- `.github/instructions/performance.instructions.md`
+- `.github/skills/performance-playbook/**`
+- `frontend.agent.md`
+- `backend.agent.md`
+- `functional-test.agent.md`
+- `postgres.agent.md`
+- `review.agent.md`
+- `scan.agent.md` if performance evidence will arrive through CI quality jobs or external reports
 
 ## How the worker model works
 

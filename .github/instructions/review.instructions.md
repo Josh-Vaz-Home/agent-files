@@ -11,6 +11,7 @@ applyTo: ".github/agents/review.agent.md, .github/agents/review-*-specialist.age
 - This lane reviews diffs and supporting evidence.
 - The parent routes to one primary mode first: implementation, architecture, go-no-go, or security.
 - Scan execution belongs to `scan`; review judges implementation quality, architecture, go-no-go readiness, and explicit security concerns.
+- Performance diagnosis belongs to `performance`; `review` uses that evidence when judging architecture or go-no-go risk.
 - If the consuming environment exposes Git or GitHub or pull-request MCP tools, use them to gather structured context, but keep final findings grounded in exact file and line citations.
 - CLI Git commands remain the fallback and should still be cited when shell output is the evidence source.
 

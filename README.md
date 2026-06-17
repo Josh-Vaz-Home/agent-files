@@ -6,7 +6,7 @@ A VS Code Copilot customization library for strict, lane-based workflows in adop
 
 This repository contains:
 
-- user-facing parent lanes for implementation, testing, linting, browser testing, Postgres work, review, and scan
+- user-facing parent lanes for implementation, testing, linting, browser testing, Postgres work, performance diagnosis, review, and scan
 - hidden specialists for narrow work; outside the frontend and backend test or lint sets, only `review` uses a small hidden-specialist set
 - file-scoped instructions for maintaining the library
 - reusable skills with commands near the top and concrete examples
@@ -64,6 +64,7 @@ This library now has a strict supported editor profile for consuming repositorie
 - `frontend-test` owns CI failure triage for Vitest and other frontend unit or integration test runs.
 - `functional-test` owns CI failure triage for Playwright and browser-level runs, including traces, reports, screenshots, and videos.
 - `scan` owns CI failure triage for SonarQube, SARIF, dependency, secrets, and container-scan jobs.
+- `performance` owns CI failure triage for load-test, profiler, and performance-budget jobs.
 
 This profile is strict about the editor and extension stack, but it does not pretend every capability is frontmatter-wired today. Browser live-inspection, richer pgsql tooling, and HTTP or OpenAPI interaction still depend on extension UX, explicit files, or CLI workflows in some environments.
 
@@ -164,6 +165,15 @@ The backend lane is intentionally opinionated. Generic examples assume:
 - Review autogenerate output manually and separate backfills when possible.
 - Query tuning requires `EXPLAIN` evidence, access-pattern notes, and scale context.
 
+### Performance
+
+- `performance` owns profiling, bottleneck diagnosis, performance baselines, regression triage, and load or stress evidence.
+- Default tools: `rollup-plugin-visualizer`, Playwright traces and browser inspection, `py-spy`, `memray`, `k6`, and Postgres `EXPLAIN` evidence through `postgres`.
+- When Browser or DevTools or HTTP or API or Postgres or Docker MCP tools are available in the consuming workspace, use them to inspect traces, timings, plans, or container state, but keep commands, artifact paths, and environment notes explicit.
+- Keep performance claims tied to representative workloads, environment notes, and before or after comparison when possible.
+- Product-code remediation still belongs to `frontend`, `backend`, or `postgres` once the bottleneck is understood.
+- CI failure triage for load-test, profiler, and performance-budget jobs belongs to this lane.
+
 ### Review
 
 - `review` is designed for adopted repositories, not for reviewing this customization repository itself.
@@ -193,6 +203,7 @@ The backend lane is intentionally opinionated. Generic examples assume:
 - `git-review-playbook` — deeper Git diff, rename, blame, and history tactics for the `review` lane.
 - `github-cli-playbook` — `gh`-driven PR, checks, code-scanning, and workflow-log tactics for `scan` first and `review` second.
 - `postgres-playbook` — Docker, `psql`, migration, and plan-evidence workflows for the `postgres` lane.
+- `performance-playbook` — profiling, bundle-analysis, load-test, and regression-triage workflows for the `performance` lane.
 - `playwright-patterns` — Playwright authoring and browser-debugging tactics for the `functional-test` lane.
 - `playwright-ci-debug` — CI trace, report, screenshot, and flaky-run triage workflows for the `functional-test` lane.
 - `vitest-debug-playbook` — focused rerun, reporter, snapshot, and coverage triage workflows for the `frontend-test` lane.
@@ -204,6 +215,7 @@ The backend lane is intentionally opinionated. Generic examples assume:
 - `review` and its four hidden review specialists wire `changes`, `activePullRequest`, `openPullRequest`, `pullRequestStatusChecks`, and `issue_fetch`; the parent also wires `doSearch`.
 - `frontend-test` wires `activePullRequest`, `openPullRequest`, and `pullRequestStatusChecks` for stable PR and CI-status context.
 - `scan` wires `activePullRequest`, `openPullRequest`, `pullRequestStatusChecks`, `issue_fetch`, `doSearch`, `sonarqube_analyzeFile`, `sonarqube_getPotentialSecurityIssues`, and `sonarqube_setUpConnectedMode`.
+- `performance` keeps Browser or DevTools, HTTP or API, and Postgres or Docker inspection in body guidance until the editor exposes stable custom-agent tool identifiers for cross-layer performance tooling.
 - Browser or DevTools inspection, richer pgsql database tooling, generic HTTP or API or OpenAPI inspection, generic Git-history tooling, and repo-specific workflow or artifact tooling stay in body guidance until the editor exposes stable custom-agent tool identifiers for them.
 
 ## Repo-local turnkey contract
@@ -213,7 +225,7 @@ For a consuming repository, keep repo-specific setup explicit in files instead o
 - Copy-ready versions of these files live under `templates/turnkey/` in this library.
 - Start with `templates/turnkey/README.md` when copying the contract into an adopted repo.
 
-- `docs/copilot-turnkey.md` — one concise contract for repo roots, scripts, auth model, workflow names, Sonar binding, Playwright auth bootstrap, and review base refs.
+- `docs/copilot-turnkey.md` — one concise contract for repo roots, scripts, auth model, workflow names, Sonar binding, Playwright auth bootstrap, performance entrypoints and artifact paths, and review base refs.
 - `.env.example` — placeholder variable names only, never secrets.
 - `openapi/openapi.yaml` or `docs/openapi.yaml` — stable OpenAPI entrypoint.
 - `requests.http` or `api/*.http` — reviewable REST Client request flows.
@@ -261,6 +273,7 @@ For a consuming repository, keep repo-specific setup explicit in files instead o
 
 - `functional-test.agent.md`
 - `postgres.agent.md`
+- `performance.agent.md`
 - `review.agent.md`
 - `scan.agent.md`
 
@@ -277,6 +290,7 @@ For a consuming repository, keep repo-specific setup explicit in files instead o
 - testing and linting are split by language; there are no shared test or lint parents
 - browser journeys, page objects, fixtures, auth setup helpers, and snapshot or baseline artifacts stay in `functional-test.agent.md`
 - Postgres schema work, migrations, query review, and backfills stay in `postgres.agent.md`
+- deep performance diagnosis, profiling, load-test evidence, and performance-regression triage stay in `performance.agent.md`
 - review inspects diffs and evidence; scan is tool-first and report-only
 - the review parent routes first; it should not linger in blended “correct, safe, ready” commentary when one mode clearly owns the question
 - parent agents should do most work; outside the frontend and backend specialist sets, only `review` carries a small hidden-specialist set
@@ -344,10 +358,11 @@ When improving this library, consult these files first:
 - undocumented `Any` and `type: ignore` should be treated as defects
 - auth and migration changes should be reviewed explicitly
 
-### Functional, Postgres, review, and scan lanes
+### Functional, Postgres, performance, review, and scan lanes
 
 - Playwright guidance bans sleep-based synchronization and broad timeout increases require approval.
 - Postgres guidance requires rollback or safe roll-forward thinking and real plan evidence.
+- Performance guidance requires representative workloads, environment notes, and artifact-backed claims.
 - Review guidance uses `Blocker`, `High`, `Medium`, and `Low` with exact citations.
 - Scan guidance requires evidence before dismissal and does not change CI or policy without approval.
 
@@ -418,6 +433,17 @@ When improving this library, consult these files first:
 - `python -m alembic revision --autogenerate -m "describe change"`
 - `python -m alembic upgrade head`
 - `python -m alembic downgrade -1`
+- `psql postgresql://postgres:postgres@localhost:5432/app -c "EXPLAIN (ANALYZE, BUFFERS) SELECT ...;"`
+
+### Performance
+
+- `npm run build`
+- `npm install -D rollup-plugin-visualizer`
+- `npx playwright test tests/e2e/homepage.spec.ts --trace on`
+- `python -m pip install py-spy memray`
+- `py-spy record -o reports/pyspy.svg -- python -m uvicorn app.main:app`
+- `python -m memray run -o reports/memray.bin -m uvicorn app.main:app`
+- `k6 run perf/smoke.js`
 - `psql postgresql://postgres:postgres@localhost:5432/app -c "EXPLAIN (ANALYZE, BUFFERS) SELECT ...;"`
 
 ### Review

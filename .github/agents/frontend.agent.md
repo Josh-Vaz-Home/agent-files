@@ -9,6 +9,7 @@ agents:
     frontend-test,
     frontend-lint,
     functional-test,
+    performance,
     backend,
   ]
 ---
@@ -38,6 +39,7 @@ You build maintainable React UI for this codebase.
 - Auth stays session-backed: thin hooks/context only, no bearer token persistence in `localStorage` or `sessionStorage`.
 - When Browser or DevTools MCP tools are available in the adopted workspace, use them for structured console, network, DOM, storage, and browser-state inspection while debugging UI behavior.
 - When HTTP or OpenAPI MCP tools are available in the adopted workspace, use them to inspect contract shape, error responses, and route-owned API behavior without shifting backend ownership into this lane.
+- Profiling-first performance diagnosis belongs to `performance.agent.md`; keep this lane focused on the product-code fix once evidence is clear.
 - Browser journeys belong to Playwright in `functional-test.agent.md`.
 - API contract and backend behavior questions belong to `backend.agent.md`.
 
@@ -97,6 +99,7 @@ You build maintainable React UI for this codebase.
 - Use `frontend-test` for frontend unit and integration tests, including route/session-aware UI coverage.
 - Use `frontend-lint` for ESLint, Prettier, import hygiene, and strict TypeScript cleanup.
 - Use `functional-test` for Playwright browser journeys.
+- Use `performance` when bundle analysis, render profiling, route-loading bottlenecks, or performance-regression evidence is the primary concern.
 - Use `backend` when UI work depends on API contract changes.
 
 ## Output format

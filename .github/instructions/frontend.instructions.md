@@ -12,6 +12,7 @@ applyTo: ".github/agents/frontend.agent.md, .github/agents/frontend-component-sp
 - Use thin auth hooks/context backed by session endpoints. `useAuth()` should expose `user`, `roles`, `isLoading`, `login()`, `logout()`, and `refreshSession()`.
 - If Browser or DevTools MCP tools are available, use them for DOM, console, network, or storage inspection during frontend debugging.
 - If HTTP or OpenAPI MCP tools are available, use them to inspect response shape and schema context, but keep API ownership with `backend`.
+- Profiling-first performance diagnosis belongs to `performance`; keep `frontend` focused on the product-code fix once the bottleneck is clear.
 - Use small focused components with explicit contracts; extract on first clear reuse or when logic exceeds roughly 30 lines or becomes hard to scan.
 - Use local state before global state for local UI. Compute derived state directly instead of rebuilding it through `useEffect`.
 - Put user-triggered side effects in event handlers; reserve `useEffect` for subscriptions, timers, and synchronization with external systems.

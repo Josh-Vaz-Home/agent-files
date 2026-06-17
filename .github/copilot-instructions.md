@@ -68,6 +68,7 @@ This repository is a **Copilot customization library**, not an application codeb
 - Keep Playwright work in `functional-test.agent.md`.
 - Keep SonarQube, dependency audit, and deeper security scanning in `scan.agent.md`.
 - Keep PostgreSQL schema/query work in `postgres.agent.md`.
+- Keep deep performance diagnosis, profiling, load-test evidence, and performance-regression triage in `performance.agent.md`.
 - Prefer `npm` examples for frontend commands and `pip`/`python -m ...` examples for backend commands.
 - Pylance strict mode is required for Python editor analysis.
 
