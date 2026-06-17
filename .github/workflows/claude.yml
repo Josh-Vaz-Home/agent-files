@@ -1,9 +1,9 @@
 name: Claude
 
-# Comment "@claude ..." on an issue or PR (or open an issue containing @claude) and Claude Code
-# runs on an isolated GitHub-hosted runner, implements it, and opens a PR.
-# Only repo OWNER/MEMBER/COLLABORATOR can trigger it (bots/outsiders are ignored).
-# Auth: Max-plan OAuth token (no API billing). Model: Opus 4.8.
+# Comment "@claude ..." on an issue or PR conversation (or open an issue containing @claude) and
+# Claude Code runs on an isolated GitHub-hosted runner, implements it, and opens a PR.
+# Only a repo OWNER/MEMBER/COLLABORATOR can trigger the job; bot/outsider events are skipped.
+# Auth: Max-plan OAuth token (no API billing). Model: Opus 4.8. Third-party actions SHA-pinned.
 on:
   issue_comment:
     types: [created]
@@ -24,14 +24,15 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
-      id-token: write
+      actions: read      # let @claude read CI run logs when asked to diagnose a failure
+      id-token: write    # REQUIRED: OIDC token is exchanged for the Claude GitHub App token (repo write)
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
           fetch-depth: 1
       - name: Run Claude Code
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@9dd8b95a392eb34b6f5fb56cf5a64cb735912d4b  # v1 (v1.0.150)
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           claude_args: "--model claude-opus-4-8"
