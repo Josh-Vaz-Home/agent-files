@@ -1,0 +1,33 @@
+name: Gitleaks (full history)
+
+# BG-11: weekly scan of the ENTIRE git history for committed secrets. This complements the
+# per-PR working-tree gitleaks scan (which only sees current files). Runs isolated on a
+# GitHub-hosted runner; needs only read access to its own repo.
+on:
+  schedule:
+    - cron: "23 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  history:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+        with:
+          fetch-depth: 0
+      - name: Install gitleaks
+        run: |
+          set -euo pipefail
+          TAG="$(curl -fsSL https://api.github.com/repos/gitleaks/gitleaks/releases/latest \
+            | grep -oE '"tag_name": *"v[^"]+"' | head -1 | sed -E 's/.*"v([^"]+)".*/\1/')"
+          echo "Installing gitleaks v${TAG}"
+          curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v${TAG}/gitleaks_${TAG}_linux_x64.tar.gz" -o /tmp/gl.tgz
+          tar -xzf /tmp/gl.tgz -C /tmp gitleaks
+          sudo install /tmp/gitleaks /usr/local/bin/gitleaks
+          gitleaks version
+      - name: Scan full git history for secrets
+        run: gitleaks git --redact --verbose .
